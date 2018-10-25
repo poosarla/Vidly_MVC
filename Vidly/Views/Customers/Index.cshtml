@@ -1,0 +1,124 @@
+﻿@model Vidly.ViewModels.IndexCustomersViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Customers</h2>
+
+<style>
+    .displayNone {
+        display: none;
+    }
+</style>
+@{
+
+    bool showDeleteButton = false;
+    if (User.IsInRole("canManageMovies"))
+    {
+        showDeleteButton = true;
+    }
+}
+
+@*<p> Customer count is: @Model.CustomerList.Count() </p>
+
+    @if (@Model.CustomerList.Count() == 0)
+    {
+        <h2>No Customers Yet</h2>
+    }
+    else
+    {
+*@
+<table class="table table-bordered table-hover" id="customers">
+    <thead>
+    <th>Customer</th>
+    <th>Membership Type</th>
+    <th>Discount Rate</th>
+    <th>Delete</th>
+    </thead>
+    <tbody>
+        @*<li>@customer.Name</li>*@
+        @*@foreach (Vidly.Models.Customer customer in @Model.CustomerList)
+            {
+                <tr>
+                    <td>@Html.ActionLink(@customer.Name, "Edit", "Customers", new { id = @customer.ID }, null)</td>
+                    <td>@customer.MemberShipType.MemberShipTypeDesc</td>
+                    <td>@customer.MemberShipType.DiscountRate%</td>
+                    <td><button id="@customer.ID" class="btn btn-link customerDelete">Delete</button> </td>
+                </tr>
+            }*@
+
+    </tbody>
+</table>
+@*  }*@
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            var CustomersTable = $("#customers").DataTable({
+
+                ajax: {
+                    url: "api/customers",
+                    dataSrc: ""
+                },
+                columns: [
+                {
+                    data: "name",
+                    render: function (data, type, customerRow) {
+                        debugger;
+                        return "<a href='/customers/edit?id=" + customerRow.id + "'>" + customerRow.name + "</a>"
+                    }
+                },
+                {
+                    data: "memberShipType.memberShipTypeDesc"
+                },
+                {
+                    data: "memberShipType.discountRate",
+                    render: function (data) {
+
+                        return "<span>" + data + "%</span>"
+                    }
+                },
+                {
+                    data: "id",
+                    render: function (data) {
+
+                        return "<button class='btn btn-link customerDelete' id='" + data + "' >Delete</button>"
+                    },
+                    visible: "@showDeleteButton" == "False" ? false : true,
+                }
+
+                ],
+            });
+
+
+            $("#customers").on("click", ".customerDelete", function () {
+
+                var btnselectedCustomer = $(this);
+
+                bootbox.confirm("Are you sure do you want to delete?", function (result) {
+                    debugger;
+                    if (result) {
+
+                        $.ajax({
+                            url: "api/Customers/" + $(btnselectedCustomer).attr("id"),
+                            method: "DELETE",
+                            success: function () {
+                                console.log("Success");
+                                CustomersTable.row($(btnselectedCustomer).parents("tr")).remove().draw();
+                                //$(btnselectedCustomer).parents("tr").remove();
+                            }
+                        })
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+}
+
+
+

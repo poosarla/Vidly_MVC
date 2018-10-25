@@ -1,0 +1,43 @@
+﻿@model Vidly.ViewModels.NewCustomerViewModel
+
+@{
+    /**/
+
+    ViewBag.Title = "NewCustomer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Customer</h2>
+
+@using (Html.BeginForm("Create", "Customers"))
+{
+    <div class="form-group">
+        @Html.LabelFor(c => c.Customer.Name)
+        @Html.TextBoxFor(c => c.Customer.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Customer.Name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(c => c.Customer.DOB)
+        @Html.TextBoxFor(c => c.Customer.DOB, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Customer.DOB)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(c => c.Customer.MemberShipTypeID)
+        @Html.DropDownListFor(c => c.Customer.MemberShipTypeID, new SelectList(Model.MemberShipTypes, "ID", "MemberShipTypeDesc"), "Select Membership Type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(c => c.Customer.MemberShipType)
+
+    </div>
+
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(c => c.Customer.isSubscribedtoNewsLetter) is subscribed to NewsLetter
+        </label>
+    </div>
+    @Html.HiddenFor(c => c.Customer.ID)
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+    @Html.ValidationSummary(true)
+}
+

@@ -1,0 +1,82 @@
+﻿@model Vidly.ViewModels.MoviesViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+
+    string hideActions = "displayNone btn btn-primary";
+    if (User.IsInRole(Vidly.Models.RolesNames.CanManageMovies))
+    {
+        hideActions = "btn btn-primary";
+    }
+}
+
+
+<h2>Movies</h2>
+
+<form method="post" id="signin" action="@Url.Action("MovieForm", "Movies")">
+
+    <button class="@hideActions">ADD</button>
+
+</form>
+<style>
+    .displayNone {
+       display:none;
+    }
+</style>
+
+
+<table class="table table-bordered table-hover" id="movies">
+    <thead>
+    <th>Movie Name</th>
+    <th>Genra</th>
+    </thead>
+    <tbody>
+
+        @*@foreach (var Movie in @Model.MoviesList)
+            {
+                <tr>
+                    <td>@Html.ActionLink(@Movie.Name, "MovieForm", "Movies", new { MovieID = @Movie.ID }, null)</td>
+                    <td>@Movie.Genre.GenreDescription</td>
+                </tr>
+            }*@
+
+    </tbody>
+</table>
+
+@section Scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#movies").DataTable({
+
+                ajax: {
+                    url: "api/movies",
+                    method: "GET",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, MovieRow) {
+
+                            return "<a href='movies/movieform?MovieID=" + MovieRow.id + "'>" + data + "</a>"
+                        }
+                    },
+                    {
+                        data: "genre.genreDescription"
+                    }
+                ]
+
+
+            });
+
+        });
+
+    </script>
+
+}

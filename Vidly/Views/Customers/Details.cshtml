@@ -1,0 +1,25 @@
+﻿@model Vidly.ViewModels.MoviesViewModel
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Customer.Name</h2>
+
+<p>Membership Type : @Model.Customer.MemberShipType.MemberShipTypeDesc</p>
+
+
+@{
+    string DOB = @Model.Customer.DOB.HasValue ? @Model.Customer.DOB.Value.ToString("MM/dd/yyyy") : string.Empty;
+}
+
+@if (@Model.Customer.DOB != null)
+{
+
+
+    <div>DOB : @DOB</div>
+}
+
+<p>@*Movie Recevied Date : @Model.Customer.CustomerMovieRecievedDate*@</p>
+
+
